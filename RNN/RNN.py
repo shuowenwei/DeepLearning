@@ -16,7 +16,7 @@ from keras.layers import Dense, LSTM, Dropout
  
 dataset_train = pd.read_csv(r'/Users/k26609/Documents/GitHub/DeepLearning/RNN/GOOGL.csv') 
 
-training_set = dataset_train.iloc[:, 1:2].values 
+training_set = dataset_train.iloc[:1258, 1:2].values 
 
 sc = MinMaxScaler(feature_range = (0 ,1)) 
 training_set_scaled = sc.fit_transform(training_set) 
@@ -26,6 +26,8 @@ y_train = []
 for i in range(60, 1258): 
     X_train.append(training_set_scaled[i-60:i, 0])
     y_train.append(training_set_scaled[i, 0])
+# this is to use the past 60 days' open prices to predict tomorrow's open price    
+# X[0:59] => Y[0] = X[60]  
 X_train, y_train = np.array(X_train), np.array(y_train) 
 
 X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
@@ -49,24 +51,30 @@ regressor.compile(optimizer = 'adam', loss = 'mean_squared_error')
 
 regressor.fit(X_train, y_train, epochs = 100, batch_size = 32) 
 
+# testing
 
-dataset_test = pd.read_csv(r'') 
-
+#dataset_test = pd.read_csv(r'') 
+dataset_test = dataset_train.iloc[1258+60:, :]
 real_stock_price = dataset_test.iloc[:, 1:2].values 
 
-dataset_total = pd.concat((dataset_train['Opeb'],dataset_test['Open']), axis = 0)
-inputs = dataset_total[len(dataset_total - len(dataset_test) -60):].values 
+#dataset_total = pd.concat((dataset_train['Open'], dataset_test['Open']), axis = 0)
+#inputs = dataset_total[len(dataset_total) - len(dataset_test) - 60:].values 
 
-inputs = inputs.reshape(-1, 1)
-inputs = sc.transform(inputs)
+inputs = dataset_test.iloc[:, 1:2].values 
+inputs_scaled = sc.transform(inputs)
+
 X_test = [] 
+real_stock_price = [] 
 for i in range(60,80):
-    X_test.append(inputs[i-60:i, 0])
+    X_test.append(inputs_scaled[i-60:i, 0])
+    real_stock_price.append(inputs[i])
 
 X_test = np.array(X_test)
-X_test = reshape(X_test, (X_test.shape[0], X_test.shape[1], 1))
+real_stock_price = np.array(real_stock_price)
+
+X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1], 1))
 predicted_stock_price = regressor.predict(X_test)
-predicted_stock_price = sc.transform(predicted_stock_price)
+predicted_stock_price = sc.inverse_transform(predicted_stock_price)
 
 plt.plot(real_stock_price, color = 'red', label = 'Real Google Stock Price')
 plt.plot(predicted_stock_price, color = 'blue', label = 'Predicted Google Stock Price')
@@ -75,6 +83,8 @@ plt.xlabel('Time')
 plt.ylabel('Google Stock Price')
 plt.legend()
 plt.show()
+
+
 
 
 
