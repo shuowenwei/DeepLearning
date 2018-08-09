@@ -99,13 +99,15 @@ len(df_train)
 ########## method 1
 n = 0 
 df_train['targetBondList2'] = " "
-for index, trac in df_train.iterrows():
+for targerIssuer in issuers: 
     n += 1 
-    print("currently processing n = ", n)
-    df = df_trsctn_timeSorted[(df_trsctn_timeSorted['issuer'] == trac['issuer'])
-                                & (df_trsctn_timeSorted['Time'] >= trac['LastTime'])
-                                & (df_trsctn_timeSorted['Time'] < trac['Time'])
-                                & (df_trsctn_timeSorted['BondName'] != trac['BondName'])
+    print("Currently processing n = {0}, target issuer: {1}".format(n, targerIssuer)) 
+    df_targer_issuer = None 
+    df_targer_issuer = df_trsctn_timeSorted[df_trsctn_timeSorted['issuer'] == targerIssuer][['BondName','Time']].copy(deep=True)
+    for index, trac in df_train[df_train['issuer'] == targerIssuer].iterrows():
+        df = df_targer_issuer[  (df_targer_issuer['Time'] >= trac['LastTime'])
+                                & (df_targer_issuer['Time'] < trac['Time'])
+                                & (df_targer_issuer['BondName'] != trac['BondName'])
                                 ].groupby(['BondName']).tail(1)
     df_train.at[index, 'targetBondList2'] = df.values.tolist()
 
