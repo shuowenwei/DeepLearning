@@ -18,10 +18,13 @@ import sys
 
 input_argu = sys.argv[1] 
 dataframe_name = r'./' + str(input_argu)
+
+dataframe_name = r'./df_trsctn_timeSorted_part_1.pkl'
 print('input file name: ' + dataframe_name)
 df_trsctn_timeSorted = pd.read_pickle(dataframe_name) 
+df_trsctn_timeSorted = pd.read_pickle('./df_trsctn_timeSorted_part_1.pkl')
 
-issuers = set(df_trsctn_timeSorted['issuer']) 
+issuers = list(set(df_trsctn_timeSorted['issuer'])) 
 df_trsctn_timeSorted = df_trsctn_timeSorted.sort_values('Time').reset_index(drop=True)
 df_train = df_trsctn_timeSorted[df_trsctn_timeSorted['Time'] > 0.5].reset_index(drop=True).copy(deep=True)
 #df_train = df_trsctn_timeSorted.copy(deep=True)
@@ -30,7 +33,7 @@ len(df_train)
 
 ########## method 1
 n = 0 
-df_train['targetBondList1'] = " "
+df_train['targetBondList1'] = "if you see this, something is wrong"
 for targerIssuer in issuers: 
     n += 1 
     print("Currently processing file {0}, n = {1}, target issuer: {2}".format(dataframe_name.replace('.pkl',''), n, targerIssuer)) 
@@ -46,4 +49,7 @@ for targerIssuer in issuers:
 
 fileName = r'./' + dataframe_name.replace('.pkl','') + '_output.pkl'
 df_train.to_pickle(fileName) 
+print('--- mission accomplished: output file: ', fileName)
+
+
 
