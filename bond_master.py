@@ -85,7 +85,7 @@ issuers_chunk = [ [] for i in range(threads)]
 issuers_chunk_count = [ 0 for i in range(threads)] 
 part_number = 0 
 for issuer in issuers: 
-    print("constructing chunk: ", part_number + 1)
+#    print("constructing chunk: ", part_number + 1)
     issuers_chunk_count[part_number] += int(issuer_distribution[issuer_distribution['issuer'] == issuer]['counts']) 
     issuers_chunk[part_number].append(issuer) 
     if issuers_chunk_count[part_number] > approx_size: 
@@ -98,6 +98,7 @@ for i in range(len(issuers_chunk)):
 
 # to this point, you will have 10 (threads) pickle files in your current folder, each has about the same size/length
 # next: open 10 terminals/notebook to run "python bond_mapper.py df_trsctn_timeSorted_part_X.pkl" 10 times, X=0,1,...9
+
 
 
 
