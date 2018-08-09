@@ -20,6 +20,7 @@ import sys
 input_argus = [] 
 for fileName in sys.argv[1:]:
     input_argus.append(fileName)
+    
 """
 input_argus = [ 'df_trsctn_timeSorted_part_1_output.pkl'
                ,'df_trsctn_timeSorted_part_2_output.pkl'
@@ -42,10 +43,9 @@ for input_argu in input_argus:
     
 finalResults = pd.concat(df_input_list)
 finalResults = finalResults.sort_values('Time').reset_index(drop=True)
-
 finalResults.to_pickle('./finalResults')
+print("-------------------The end-------------------")
 
-temp = pd.read_pickle('./df_trsctn_timeSorted_part_1_output.pkl')
-
-
+# validate
+#temp = pd.read_pickle('./df_trsctn_timeSorted_part_1_output.pkl')
 

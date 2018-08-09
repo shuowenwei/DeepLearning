@@ -18,7 +18,7 @@ string.ascii_letters
 def generateBondIssuer(nameLen):
     return "".join([random.choice(string.ascii_letters) for i in range(nameLen)])
 
-numIssuers = 350
+numIssuers = 3500
 issuers = [generateBondIssuer(randint(4,7)) for i in range(numIssuers)]
 
 plt.hist(np.random.chisquare(15, numIssuers))
@@ -40,7 +40,7 @@ def getATime():
 def getAPrice():
     return random.randint(10,50) 
 
-totalTransactions = 10**4
+totalTransactions = 5*10**6
 print("Total number of transactions: ", totalTransactions) 
 
 transactionsList = [] 
@@ -83,7 +83,6 @@ threads = 10
 approx_size = int(round(len(df_trsctn_timeSorted) / threads )) 
 issuers_chunk = [ [] for i in range(threads)] 
 issuers_chunk_count = [ 0 for i in range(threads)] 
-
 part_number = 0 
 for issuer in issuers: 
     print("constructing chunk: ", part_number + 1)
@@ -131,6 +130,9 @@ finalResults.equals(df_trsctn_timeSorted)
 len(set(finalResults['issuer']))
 len(set(df_trsctn_timeSorted['issuer'])) 
 """
+
+
+
 
 
 
