@@ -21,7 +21,7 @@ dataframe_name = r'./' + str(input_argu)
 print('input file name: ' + dataframe_name)
 df_trsctn_timeSorted = pd.read_pickle(dataframe_name) 
 
-issuers = list(df_trsctn_timeSorted['issuer']) 
+issuers = set(df_trsctn_timeSorted['issuer']) 
 df_trsctn_timeSorted = df_trsctn_timeSorted.sort_values('Time').reset_index(drop=True)
 df_train = df_trsctn_timeSorted[df_trsctn_timeSorted['Time'] > 0.5].reset_index(drop=True).copy(deep=True)
 #df_train = df_trsctn_timeSorted.copy(deep=True)

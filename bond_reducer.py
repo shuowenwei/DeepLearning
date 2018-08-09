@@ -28,6 +28,13 @@ import sys
 input_argus = [] 
 for fileName in sys.argv[1:]:
     input_argus.append(fileName)
-    
 
+df_input_list = [] 
+for input_argu in input_argus:
+    dataframe_name = r'./' + str(input_argu)
+    df_input_list.append(pd.read_pickle(dataframe_name))
     
+finalResults = pd.concat(df_input_list)
+finalResults = finalResults.sort_values('Time').reset_index(drop=True)
+
+finalResults.to_pickle('./finalResults')
