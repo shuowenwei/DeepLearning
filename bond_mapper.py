@@ -21,8 +21,8 @@ dataframe_name = r'./' + str(input_argu)
 
 print('input file name: ' + dataframe_name)
 df_trsctn_timeSorted = pd.read_pickle(dataframe_name) 
-dataframe_name = r'./df_trsctn_timeSorted_part_1.pkl'
-df_trsctn_timeSorted = pd.read_pickle('./df_trsctn_timeSorted_part_1.pkl')
+#dataframe_name = r'./df_trsctn_timeSorted_part_1.pkl'
+#df_trsctn_timeSorted = pd.read_pickle('./df_trsctn_timeSorted_part_1.pkl')
 
 issuers_sublist = list(set(df_trsctn_timeSorted['issuer'])) 
 df_trsctn_timeSorted = df_trsctn_timeSorted.sort_values('Time').reset_index(drop=True)

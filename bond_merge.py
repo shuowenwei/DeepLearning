@@ -20,11 +20,11 @@ def generateBondIssuer(nameLen):
 numIssuers = 1500
 issuers = [generateBondIssuer(randint(4,7)) for i in range(numIssuers)]
 
-plt.hist(np.random.chisquare(25, numIssuers))
+plt.hist(np.random.chisquare(100, numIssuers))
 
 issuer_bond_dict = dict() 
 totalNumBonds = 0 
-for issuer, numBond in zip(issuers, np.random.chisquare(25, numIssuers)): 
+for issuer, numBond in zip(issuers, np.random.chisquare(100, numIssuers)): 
     issuer_bond_dict[issuer] = [issuer+str(i) for i in range(int(numBond))] 
     totalNumBonds += int(numBond) 
 print("Total number of bonds: ", totalNumBonds) 
@@ -80,28 +80,44 @@ for issuer in issuers:
     if issuers_chunk_count[part_number] > approx_size: 
         part_number += 1 
 
-#for i in range(len(issuers_chunk)):    
+
+
+import gc
+gc.collect() 
+leftCol = ['BondName', 'Time', 'Price', 'issuer', 'LastTime']
+rightCol = ['BondName', 'Time', 'Price', 'issuer']
+results = [] 
+for i in range(len(issuers_chunk)):
+    gc.collect()
+    df = None 
+    df = df_trsctn_timeSorted[df_trsctn_timeSorted['issuer'].isin(issuers_chunk[0])].copy(deep=True)
+    r = pd.merge(df[leftCol], df[rightCol], on = 'issuer', how = 'left')
+    len(r)
+    r = r[(r['Time_x'] > results['Time_y'])
+            &(r['LastTime_x'] < results['Time_y'])
+        ].sort_values('Time_y').groupby(['BondName_x','Time_x','issuer','BondName_y']).tail(1)#.reset_index(drop=True)
+    len(r)
+    results.append(r)
+
+
+"""
 #    df = df_trsctn_timeSorted[df_trsctn_timeSorted['issuer'].isin(issuers_chunk[i])].copy(deep=True)
 #    fileName = r'./df_trsctn_timeSorted_part_'+str(i+1)+'.pkl'
 #    df.to_pickle(fileName) 
 
 df = df_trsctn_timeSorted[df_trsctn_timeSorted['issuer'].isin(issuers_chunk[0])].reset_index(drop=True).copy(deep=True)
 len(df)
-
-leftCol = ['BondName', 'Time', 'Price', 'issuer', 'LastTime']
-rightCol = ['BondName', 'Time', 'Price', 'issuer']
-results = pd.merge(df, df, on = 'issuer', how = 'left', copy=False)
+results = pd.merge(df[leftCol], df[rightCol], on = 'issuer', how = 'left')
 results.columns
-
 len(results)
+
 results = results[(results['Time_x'] > results['Time_y'])
                         &(results['LastTime_x'] < results['Time_y'])
                     ]
 len(results)
-
 results = results[(results['Time_x'] > results['Time_y'])
                         &(results['LastTime_x'] < results['Time_y'])
-                    ].sort_values('Time_y').groupby(['BondName_x','Time_x','Price_x','issuer','BondName_y']).tail(1).reset_index(drop=True)
+                    ].sort_values('Time_y').groupby(['BondName_x','Time_x','issuer','BondName_y']).tail(1).reset_index(drop=True)
 len(results)
 
 
@@ -112,7 +128,7 @@ len(results)
 
 
 
-"""
+# convert to sql: 
 #https://stackoverflow.com/questions/30627968/merge-pandas-dataframes-where-one-value-is-between-two-others
 
 import sqlite3
