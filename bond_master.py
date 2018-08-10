@@ -27,8 +27,8 @@ totalNumBonds = 0
 for issuer, numBond in zip(issuers, np.random.chisquare(15, numIssuers)): 
     issuer_bond_dict[issuer] = [issuer+str(i) for i in range(int(numBond))] 
     totalNumBonds += int(numBond) 
-
 print("Total number of bonds: ", totalNumBonds) 
+
 def getABond():
     issuer = random.choice(issuers) 
     return random.choice(issuer_bond_dict[issuer])
@@ -39,9 +39,8 @@ def getATime():
 def getAPrice():
     return random.randint(10,50) 
 
-totalTransactions = 5*10**6
+totalTransactions = 10**6
 print("Total number of transactions: ", totalTransactions) 
-
 transactionsList = [] 
 for i in range(totalTransactions):
     transactionsList.append([getABond(), getATime(), getAPrice()])
@@ -90,7 +89,8 @@ for i in range(len(issuers_chunk)):
 # next: open 10 terminals/notebook to run "python bond_mapper.py df_trsctn_timeSorted_part_X.pkl" 10 times, X=0,1,...9
 
 
-""" validation chunks : 
+""" 
+validation chunks : 
 input_argus = [ 'df_trsctn_timeSorted_part_1.pkl'
                ,'df_trsctn_timeSorted_part_2.pkl'
                ,'df_trsctn_timeSorted_part_3.pkl'
