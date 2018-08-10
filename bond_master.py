@@ -17,7 +17,7 @@ string.ascii_letters
 def generateBondIssuer(nameLen):
     return "".join([random.choice(string.ascii_letters) for i in range(nameLen)])
 
-numIssuers = 350
+numIssuers = 3500
 issuers = [generateBondIssuer(randint(4,7)) for i in range(numIssuers)]
 
 plt.hist(np.random.chisquare(15, numIssuers))
@@ -39,7 +39,7 @@ def getATime():
 def getAPrice():
     return random.randint(10,50) 
 
-totalTransactions = 10**4
+totalTransactions = 5*10**6
 print("Total number of transactions: ", totalTransactions) 
 
 transactionsList = [] 
