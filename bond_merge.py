@@ -94,7 +94,7 @@ for i in range(len(issuers_chunk)):
     r = pd.merge(df[leftCol], df[rightCol], on = 'issuer', how = 'left')
     len(r)
     r = r[(r['Time_x'] > r['Time_y'])
-            &(r['LastTime_x'] < r['Time_y'])
+            &(r['LastTime'] < r['Time_y'])
         ].sort_values('Time_y').groupby(['BondName_x','Time_x','issuer','BondName_y']).tail(1)#.reset_index(drop=True)
     len(r)
     results.append(r)
