@@ -68,7 +68,7 @@ issuer_distribution = df_trsctn_timeSorted.groupby(['issuer']).size().reset_inde
 sum(list(issuer_distribution['counts'])) == totalTransactions # True
 plt.hist(issuer_distribution) 
 
-threads = 200 
+threads = 400 
 approx_size = int(round(len(df_trsctn_timeSorted) / threads )) # size of each chunk
 issuers_chunk = [ [] for i in range(threads)] 
 issuers_chunk_count = [ 0 for i in range(threads)] 
@@ -81,15 +81,17 @@ for issuer in issuers:
         part_number += 1 
 
 
-
+import time
+time_start = time.time()
 import gc
 gc.collect() 
 leftCol = ['BondName', 'Time', 'Price', 'issuer', 'LastTime']
 rightCol = ['BondName', 'Time', 'Price', 'issuer']
 results = [] 
 for i in range(len(issuers_chunk)):
+    df = None
+    print("Currently process {0} out of {1}:".format(i, len(issuers_chunk)))
     gc.collect()
-    df = None 
     df = df_trsctn_timeSorted[df_trsctn_timeSorted['issuer'].isin(issuers_chunk[0])].copy(deep=True)
     r = pd.merge(df[leftCol], df[rightCol], on = 'issuer', how = 'left')
     len(r)
@@ -98,6 +100,10 @@ for i in range(len(issuers_chunk)):
         ].sort_values('Time_y').groupby(['BondName_x','Time_x','issuer','BondName_y']).tail(1)#.reset_index(drop=True)
     len(r)
     results.append(r)
+time_end = time.time()
+print(time_end - time_start)
+
+
 
 
 """

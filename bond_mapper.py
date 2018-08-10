@@ -42,9 +42,9 @@ for targerIssuer in issuers_sublist:
     df_targer_issuer = None 
     df_targer_issuer = df_trsctn_timeSorted[df_trsctn_timeSorted['issuer'] == targerIssuer][['BondName','Time']].copy(deep=True)
     for index, trac in df_train[df_train['issuer'] == targerIssuer].iterrows():
-        df_train.at[index, 'targetBondList1'] = df_targer_issuer[ (df_targer_issuer['Time'] >= trac['LastTime'])
+        df_train.at[index, 'targetBondList1'] = df_targer_issuer[ (df_targer_issuer['Time'] > trac['LastTime'])
                                 & (df_targer_issuer['Time'] < trac['Time'])
-                                & (df_targer_issuer['BondName'] != trac['BondName'])
+#                                & (df_targer_issuer['BondName'] != trac['BondName'])
                                 ].groupby(['BondName']).tail(1).values.tolist()
 #        df_train.at[index, 'targetBondList1'] = df.values.tolist()
 #        print("current index is: ", index)
@@ -69,9 +69,9 @@ m = 0
 df_train['targetBondList2'] = " "
 def getBondbySameIssuer(strBondName, floatTime, floatLastTime):
     #print("Currently df's length {0}".format(len(df_targer_issuer))) 
-    return df_targer_issuer[ (df_targer_issuer['Time'] >= floatLastTime)
+    return df_targer_issuer[ (df_targer_issuer['Time'] > floatLastTime)
                  & (df_targer_issuer['Time'] < floatTime)
-                 & (df['BondName'] != strBondName)
+#                 & (df['BondName'] != strBondName)
                  ].groupby(['BondName']).tail(1).values.tolist()
 
 for targerIssuer in issuers_sublist: 
@@ -102,8 +102,8 @@ results = pd.merge(df_train[leftCol], df_trsctn_timeSorted[rightCol], on = 'issu
 results.columns
 len(results)
 results = results[(results['Time_x'] > results['Time_y'])
-                        &(results['LastTime_x'] <= results['Time_y'])
-                        &(results['BondName_x'] != results['BondName_y'])
+                        &(results['LastTime_x'] < results['Time_y'])
+#                        &(results['BondName_x'] != results['BondName_y'])
                         ]
 len(results_filter)
 
