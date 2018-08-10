@@ -14,11 +14,10 @@ import matplotlib.pyplot as plt
 import pandas as pd 
 
 string.ascii_letters
-#random.choice(string.ascii_letters) 
 def generateBondIssuer(nameLen):
     return "".join([random.choice(string.ascii_letters) for i in range(nameLen)])
 
-numIssuers = 3500
+numIssuers = 350
 issuers = [generateBondIssuer(randint(4,7)) for i in range(numIssuers)]
 
 plt.hist(np.random.chisquare(15, numIssuers))
@@ -40,7 +39,7 @@ def getATime():
 def getAPrice():
     return random.randint(10,50) 
 
-totalTransactions = 5*10**6
+totalTransactions = 10**4
 print("Total number of transactions: ", totalTransactions) 
 
 transactionsList = [] 
@@ -59,16 +58,7 @@ df_trsctn['issuer'] = df_trsctn['BondName'].apply(lambda bondname: bond_issuedby
 df_trsctn_timeSorted = df_trsctn.sort_values('Time').reset_index(drop=True).copy(deep=True)
 df_trsctn_timeSorted.head()
 
-#df_trsctn_timeSorted = df_trsctn_timeSorted.set_index(['BondName'])
-#df_trsctn_timeSorted.head()
-#def getLastTransactionTime(strBondName, floatTime):
-#    return df_trsctn_timeSorted[(df_trsctn_timeSorted['BondName'] == strBondName)
-#                            & (df_trsctn_timeSorted['Time'] < floatTime)
-#                        ]['Time'].max()
-#
-#df_trsctn_timeSorted['LastTime'] = df_trsctn_timeSorted.apply(lambda row: getLastTransactionTime(row['BondName'], row['Time']), axis = 1)
-#getLastTransactionTime('wGhy1', 0.000003)
-
+# get last transaction time for the same bond (gourp by "BondName")
 df_trsctn_timeSorted['LastTime'] = df_trsctn_timeSorted.groupby('BondName').Time.shift(1).fillna(float(0))
 #df_trsctn_timeSorted[df_trsctn_timeSorted['BondName'] == 'wGhy1']
 df_trsctn_timeSorted.head()
@@ -80,7 +70,7 @@ sum(list(issuer_distribution['counts'])) == totalTransactions # True
 plt.hist(issuer_distribution) 
 
 threads = 10 
-approx_size = int(round(len(df_trsctn_timeSorted) / threads )) 
+approx_size = int(round(len(df_trsctn_timeSorted) / threads )) # size of each chunk
 issuers_chunk = [ [] for i in range(threads)] 
 issuers_chunk_count = [ 0 for i in range(threads)] 
 part_number = 0 
@@ -98,9 +88,6 @@ for i in range(len(issuers_chunk)):
 
 # to this point, you will have 10 (threads) pickle files in your current folder, each has about the same size/length
 # next: open 10 terminals/notebook to run "python bond_mapper.py df_trsctn_timeSorted_part_X.pkl" 10 times, X=0,1,...9
-
-
-
 
 
 """ validation chunks : 
@@ -135,19 +122,7 @@ len(set(df_trsctn_timeSorted['issuer']))
 
 
 
-
-
 """
-
-df_train = df_trsctn_timeSorted[df_trsctn_timeSorted['Time'] > 0.5].reset_index(drop=True).copy(deep=True)
-df_train.head() 
-len(df_train)
-#df_train2 = df_trsctn_timeSorted[df_trsctn_timeSorted['Time'] > 1].sort_values('Time').reset_index(drop=True).copy(deep=True)
-#df_train.equals(df_train2) 
-#for i, j in zip(df_train.index, df_train2.index):
-#    if df_train.iloc[i]['BondName'] != df_train2.iloc[j]['BondName'] or df_train.iloc[i]['Price'] != df_train2.iloc[j]['Price'] or df_train.iloc[i]['Time'] != df_train2.iloc[j]['Time']:
-#        print(i)
-
 ########## method 1
 n = 0 
 df_train['targetBondList1'] = " "
@@ -162,13 +137,8 @@ for targerIssuer in issuers:
                                 & (df_targer_issuer['BondName'] != trac['BondName'])
                                 ].groupby(['BondName']).tail(1)
         df_train.at[index, 'targetBondList1'] = df.values.tolist()
-        
-"""
 
 
-
-
-"""
 ########## method 2
 m = 0 
 df_train['targetBondList2'] = " "
@@ -197,7 +167,6 @@ for targerIssuer in issuers:
 df_train.iloc[0]['targetBondList1']
 df_train.iloc[0]['targetBondList2']
 
-
 #df_train.head()
 #df_train.drop(['new1'], axis=1, inplace=True)
 
@@ -206,7 +175,7 @@ df_train.iloc[0]['targetBondList2']
 #plt.hist(df_train.groupby(['issuer']).count()) 
 #df_train.to_pickle('./df_train.pkl') 
 #new_df = pd.read_pickle('./df_train.pkl') 
-#
+
 #len(df_train)
 #len(new_df)
 
