@@ -17,7 +17,7 @@ string.ascii_letters
 def generateBondIssuer(nameLen):
     return "".join([random.choice(string.ascii_letters) for i in range(nameLen)])
 
-numIssuers = 1500
+numIssuers = 150
 issuers = [generateBondIssuer(randint(4,7)) for i in range(numIssuers)]
 
 plt.hist(np.random.chisquare(100, numIssuers))
@@ -39,7 +39,7 @@ def getATime():
 def getAPrice():
     return random.randint(10,50) 
 
-totalTransactions = 4*10**6
+totalTransactions = 10**4
 print("Total number of transactions: ", totalTransactions) 
 transactionsList = [] 
 for i in range(totalTransactions):
@@ -88,6 +88,8 @@ gc.collect()
 leftCol = ['BondName', 'Time', 'Price', 'issuer', 'LastTime']
 rightCol = ['BondName', 'Time', 'Price', 'issuer']
 results = [] 
+def convert2List(df_input):
+    return [i for i in df_input.values.tolist()]
 for i in range(len(issuers_chunk)):
     df = None
     print("Currently process {0} out of {1}:".format(i, len(issuers_chunk)))
@@ -97,11 +99,74 @@ for i in range(len(issuers_chunk)):
     len(r)
     r = r[(r['Time_x'] > r['Time_y'])
             &(r['LastTime'] < r['Time_y'])
-        ].sort_values('Time_y').groupby(['BondName_x','Time_x','issuer','BondName_y']).tail(1)#.reset_index(drop=True)
+#            &(r['BondName_y'].isin(dict_bond[r['BondName_x']]))
+        ].sort_values('Time_y').groupby(['BondName_x','Time_x','issuer','BondName_y']).tail(1).groupby(['BondName_x', 'Time_x', 'Price_x', 'issuer'])['BondName_y','Time_y', 'Price_y'].apply(convert2List).reset_index() 
+    len(r)
+#    r = r.groupby(['BondName_x', 'Time_x', 'Price_x', 'issuer'])['BondName_y','Time_y', 'Price_y'].apply(convert2List).reset_index() 
     len(r)
     results.append(r)
 time_end = time.time()
 print(time_end - time_start)
+
+
+df = None 
+df = results[0].copy(deep=True)
+df.columns 
+df_distribution = df.groupby(['BondName_x', 'Time_x', 'Price_x', 'issuer']).size() .reset_index(name='counts').fillna(0)
+len(df_distribution)
+sum(list(df_distribution['counts'])) == len(df) 
+plt.hist(df_distribution) 
+
+df_convert2List = df.groupby(['BondName_x', 'Time_x', 'Price_x', 'issuer'])['BondName_y','Time_y', 'Price_y'].apply(convert2List).reset_index()
+
+""" draft and experiment 
+
+len(df[df['BondName_x'] == 'HhicQKh10'])
+df_distribution[df_distribution['BondName_x'] == 'HhicQKh10'] 
+
+df_distribution.columns 
+
+df_groupby = df.groupby(['BondName_x', 'Time_x', 'Price_x', 'issuer'])['BondName_y','Time_y', 'Price_y']
+
+df_groupby = df.groupby(['BondName_x', 'Time_x', 'Price_x', 'issuer'])['BondName_y','Time_y', 'Price_y'].apply(",".join).reset_index()   
+
+groups = df_groupby.groups 
+indices = df_groupby.indices 
+
+df['targetList'] = df[df_groupby.indices]['BondName_y','Time_y', 'Price_y'].to_list() 
+df.columns 
+
+
+a = df_groupby.describe() 
+# https://pandas.pydata.org/pandas-docs/stable/groupby.html
+def myfun(df_input):
+#    temp = [] 
+#    for index, data in df_input.iterrows():
+#        temp.append([data['BondName_y'], data['Time_y'], data['Price_y'] ])
+#    return temp 
+    return [i for i in df_input.values.tolist()]
+            
+a = df.groupby(['BondName_x', 'Time_x', 'Price_x', 'issuer'])['BondName_y','Time_y', 'Price_y'].apply(myfun).reset_index() 
+
+df_groupby_list
+
+df_groupby_list = df.groupby(['BondName_x', 'Time_x', 'Price_x', 'issuer'])['BondName_y','Time_y', 'Price_y'].apply(list) 
+
+apply(list).to_frame() 
+
+df['target_list'] = df.groupby(['BondName_x', 'Time_x', 'Price_x', 'issuer']).apply(list).reset_index(drop=True) 
+
+
+"""
+
+
+
+
+#import pickle 
+#with open(r'/Users/k26609/Documents/GitHub/DeepLearning/results.pkl', 'wb') as output_file: 
+#    pickle.dump(results,output_file)
+
+
 
 
 
@@ -125,8 +190,6 @@ results = results[(results['Time_x'] > results['Time_y'])
                         &(results['LastTime_x'] < results['Time_y'])
                     ].sort_values('Time_y').groupby(['BondName_x','Time_x','issuer','BondName_y']).tail(1).reset_index(drop=True)
 len(results)
-
-
 
 
 
