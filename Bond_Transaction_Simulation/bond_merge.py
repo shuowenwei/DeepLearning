@@ -119,6 +119,7 @@ plt.hist(df_distribution)
 
 df_convert2List = df.groupby(['BondName_x', 'Time_x', 'Price_x', 'issuer'])['BondName_y','Time_y', 'Price_y'].apply(convert2List).reset_index()
 
+
 """ draft and experiment 
 
 len(df[df['BondName_x'] == 'HhicQKh10'])
@@ -152,10 +153,7 @@ df_groupby_list
 
 df_groupby_list = df.groupby(['BondName_x', 'Time_x', 'Price_x', 'issuer'])['BondName_y','Time_y', 'Price_y'].apply(list) 
 
-apply(list).to_frame() 
-
 df['target_list'] = df.groupby(['BondName_x', 'Time_x', 'Price_x', 'issuer']).apply(list).reset_index(drop=True) 
-
 
 """
 
