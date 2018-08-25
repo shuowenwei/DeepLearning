@@ -20,11 +20,11 @@ def generateBondIssuer(nameLen):
 numIssuers = 150
 issuers = [generateBondIssuer(randint(4,7)) for i in range(numIssuers)]
 
-plt.hist(np.random.chisquare(100, numIssuers))
+plt.hist(np.random.chisquare(100000, numIssuers))
 
 issuer_bond_dict = dict() 
 totalNumBonds = 0 
-for issuer, numBond in zip(issuers, np.random.chisquare(100, numIssuers)): 
+for issuer, numBond in zip(issuers, np.random.chisquare(100000, numIssuers)): 
     issuer_bond_dict[issuer] = [issuer+str(i) for i in range(int(numBond))] 
     totalNumBonds += int(numBond) 
 print("Total number of bonds: ", totalNumBonds) 
@@ -39,11 +39,12 @@ def getATime():
 def getAPrice():
     return random.randint(10,50) 
 
-totalTransactions = 10**4
+totalTransactions = 10**6
 print("Total number of transactions: ", totalTransactions) 
 transactionsList = [] 
 for i in range(totalTransactions):
     transactionsList.append([getABond(), getATime(), getAPrice()])
+
 
 columnNames = ['BondName', 'Time', 'Price']
 df_trsctn = pd.DataFrame(transactionsList, columns=columnNames, index=range(totalTransactions))
