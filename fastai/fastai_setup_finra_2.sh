@@ -88,7 +88,8 @@ conda install pytorch torchvision cuda92 -c pytorch -y
 # python -m spacy download en
 pip install --upgrade pip
 pip install Cython pandas sklearn nltk gensim jupyterthemes matplotlib h5py tensorflow keras torchtext plotly
-pip install opencv-python seaborn graphviz sklearn-pandas isoweek pandas_summary ipywidgets
+pip install opencv-python seaborn graphviz sklearn-pandas isoweek pandas_summary ipywidgets feedparser
+pip install -U spacy
 jupyter nbextension enable --py widgetsnbextension
 conda install -c conda-forge bcolz -y 
 python -m ipykernel install --user --name myenv --display-name "fastai"
